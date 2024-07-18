@@ -1,0 +1,7 @@
+.flake8
+__pycache__/
+config.py
+env
+chroma
+*.json
+*.pdf
