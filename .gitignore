@@ -5,3 +5,4 @@ env
 chroma
 *.json
 *.pdf
+.DS_Store

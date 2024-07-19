@@ -15,14 +15,15 @@ class generation():
         if prompt == "" or prompt is None:
             return ('please enter a valid prompt')
 
-        prompt = self.reword(prompt, history)
+        rag_prompt = self.reword(prompt, history)
 
         max_history_length = 20
         history = history[-max_history_length:]
 
-        context = self.search_db(prompt)
+        context = self.search_db(rag_prompt)
         prompt_w_context = self.generate_prompt(prompt, history, context)
         print(prompt_w_context)
+        print(rag_prompt)
         output = ollama.generate(model=self.llm_model,
                                  prompt=prompt_w_context, stream=True)
         message = ''
@@ -36,12 +37,7 @@ class generation():
             query_embeddings=response,
             n_results=self.no_results
         )
-        chunks = results["documents"]
-        chunk_ids = results["ids"][0]
-        pages = [self.filtered_chunk_list[int(id)]["page number"] for id in chunk_ids]
-        context = ""
-        for i in range(self.no_results):
-            context += "\n- " + chunks[0][i] + f" PAGE NUMBER: {pages[i]}"
+        context = results["documents"]
         return context
 
     def generate_prompt(self, prompt: str, history: list, context: str):
@@ -104,8 +100,8 @@ Reworded Query: "Can you recommend some good local restaurants in Paris?"
 No Relevant Historical Context:
 
 User: "Tell me a joke."
-Current Query: "Tell me another one."
-Reworded Query: "Tell me another joke."
+Current Query: "Tell me a story."
+Reworded Query: "Tell me a story."
 
 Previous Interactions:
 
@@ -117,8 +113,8 @@ Reworded Query: "What is the population of Paris?"
 No Relevant Historical Context:
 
 User: "What's your favorite color?"
-Current Query: "What's your favorite movie?"
-Reworded Query: "What's your favorite movie?"
+Current Query: "What's the colour of the sun?"
+Reworded Query: "What's the colour of the sun?"
 
 Implementation Steps:
 
@@ -126,7 +122,7 @@ Implementation Steps:
 
 2. Rewording Mechanism: Use the designed prompt to guide the rewording of the current query. Ensure the reworded prompt incorporates appropriate details and keywords from the related history, enhancing its relevance for searching a vector database. DO NOT include any thinking steps in your responses and return ONLY the reworded prompt.
 
-3. Fallback: If no relevant context is identified, if the history is not related, or if the query does not require additional context, return the original query. If there is no previous interaction history, do not give any information. Just return the current query as is with no additional information.
+3. Fallback: If context is not directly relevant, if the history is not related, or if the query does not require additional context, return the original query. If there is no previous interaction history, do not give any information. Just return the current query as is with no additional information.
 
 EXTREMELY IMPORTANT: RETURN THE REWORDED PROMPT AND THE REWORDED PROMPT ONLY. DO NOT GIVE ANY CONTEXT OR DETAILS. YOU ARE A PROMPT RE-WORDER ONLY.
 

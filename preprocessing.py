@@ -151,6 +151,6 @@ class preprocessing():
         print("[INFO] Creating list of raw chunks")
         raw_chunk_list = []
         for chunk in progressbar(self.filtered_chunk_list):
-            raw_chunk_list.append(chunk["sentence chunk"])
+            raw_chunk_list.append(chunk["sentence chunk"] + f" PAGE NUMBER: {chunk['page number']}")
         self.raw_chunk_list = raw_chunk_list
         return raw_chunk_list
