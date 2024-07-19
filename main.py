@@ -21,12 +21,11 @@ def main():
     # print('Analysis:\n', preprocessor.analyse_filtered_chunk_list(5))
     raw_chunk_list = preprocessor.create_raw_chunk_list()
 
-    # filtered chunk list is used to get page numbers for chunks used
-    filtered_chunk_list = preprocessor.filtered_chunk_list
+    # creates and saves embeddings for pdf into vector db
     embedding_generator = embedder.embedder(raw_chunk_list, config.embedding_model)
     collection = embedding_generator.embed()
 
-    generator = generation.generation(filtered_chunk_list, collection, embedding_generator, config.llm_model, config.file_name)
+    generator = generation.generation(collection, embedding_generator, config.llm_model, config.file_name)
     gr.ChatInterface(generator.chat).launch()
 
 
