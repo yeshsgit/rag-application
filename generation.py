@@ -2,9 +2,8 @@ import ollama
 
 
 class generation():
-    def __init__(self, filtered_chunk_list: list[dict], collection, embedding_generator, llm_model: str, filename: str) -> None:
+    def __init__(self, collection, embedding_generator, llm_model: str, filename: str) -> None:
         self.filename = filename
-        self.filtered_chunk_list = filtered_chunk_list
         self.collection = collection
         self.embedding_generator = embedding_generator
         self.llm_model = llm_model
@@ -40,7 +39,8 @@ class generation():
         context = results["documents"]
         return context
 
-    def generate_prompt(self, prompt: str, history: list, context: str):
+    def generate_prompt(self, prompt: str, history: list, context: str) -> str:
+        """Returns prompt with user query, context, history combined"""
         template = f"""You are an AI assistant with access to the pdf {self.filename}. Use the provided context and conversation history to answer the user's query accurately.
 
                     Context from {self.filename}:
@@ -62,7 +62,8 @@ class generation():
 
         return template
 
-    def reword(self, prompt, history):
+    def reword(self, prompt: str, history: list) -> str:
+        """Rewords prompt for retrieving info from vector database"""
         max_history_length = 2
         history = history[-max_history_length:]
         rewording_prompt = f"""Instruction: You are a Prompt Re-worder. Your task is to reword user queries to include necessary historical context from previous interactions, **only if the history is related to the current query**. Ensure the reworded query is clear and coherent, incorporating relevant keywords and phrases from the related conversation history. If the current query does not require historical context, no relevant context is available, or the history is not related, return the query as it is. You return the reworded prompt and the reworded prompt only.
