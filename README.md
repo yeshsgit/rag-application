@@ -17,8 +17,9 @@ do rag with any pdf
 3. Install ollama from https://ollama.com/download
 4. Install an llm model like llama3 from ollama, specify this as the llm_model in config.py\
     command: ollama pull <model_name>
-6. Ollama needs to be running for the model to work. If you try to run main.py after restarting your computer you will get an error.\
+5. Ollama needs to be running for the model to work. If you try to run main.py after restarting your computer you will get an error.\
    Start ollama with the command below.\
     command: ollama serve
-8. Install the requirements in requirements.txt
-9. Run main.py
+6. Install the requirements in requirements.txt
+7. Run main.py
+8. When processing is complete, to open a chat in browser, click on the local url displayed in terminal
